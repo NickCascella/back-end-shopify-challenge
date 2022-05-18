@@ -53,17 +53,31 @@ exports.editWarehouse = [
     if (!errors.isEmpty()) {
       return res.status(400).send({ errors: errors.array() });
     }
-    Warehouse.findByIdAndUpdate(req.params.id, req.body).exec(
-      (err, _results) => {
-        if (err) {
-          return res
-            .status(400)
-            .send({ message: "Unable to update warehouse data" });
-        }
-
-        return res.status(200).send({ success: "Warehouse data updated" });
+    const { name, country, city } = req.body;
+    Warehouse.findOne({ name, country, city }).exec((err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .send({ message: "Unable to get warehouse data" });
       }
-    );
+
+      if (results) {
+        return res
+          .status(400)
+          .send({ message: "Warehouse name at this location already exists" });
+      }
+      Warehouse.findByIdAndUpdate(req.params.id, { name, country, city }).exec(
+        (err, _results) => {
+          if (err) {
+            return res
+              .status(400)
+              .send({ message: "Unable to update warehouse data" });
+          }
+
+          return res.status(200).send({ success: "Warehouse data updated" });
+        }
+      );
+    });
   },
 ];
 

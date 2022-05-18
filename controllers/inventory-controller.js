@@ -74,6 +74,7 @@ exports.editInventory = [
       return res.status(400).send({ errors: errors.array() });
     }
     const { name, quantity, warehouse } = req.body;
+
     Warehouse.findById(warehouse).exec((err, results) => {
       if (err) {
         return res
@@ -85,15 +86,31 @@ exports.editInventory = [
         return res.status(400).send({ message: "Warehouse does not exist" });
       }
 
-      Item.findByIdAndUpdate(req.params.id, { name, quantity, warehouse }).exec(
-        (err, _results) => {
-          if (err)
+      Item.findOne({ name, warehouse }).exec((err, results) => {
+        if (err)
+          return res
+            .status(400)
+            .send({ message: "Unable to get inventory data" });
+
+        if (results) {
+          return res.status(400).send({
+            message: "Inventory item already exists at this location",
+          });
+        }
+
+        Item.findByIdAndUpdate(req.params.id, {
+          name,
+          quantity,
+          warehouse,
+        }).exec((err, _results) => {
+          if (err) {
             return res
               .status(400)
               .send({ message: "Inventory item does not exist" });
+          }
           return res.status(200).send({ success: "Inventory item updated" });
-        }
-      );
+        });
+      });
     });
   },
 ];
