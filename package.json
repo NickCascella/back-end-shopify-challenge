@@ -1,0 +1,18 @@
+{
+  "name": "warehouse-inventory-application",
+  "version": "1.0.0",
+  "description": "Nick's Inventory Management Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Nick Cascella",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.14.0",
+    "mongoose": "^6.3.3"
+  }
+}
